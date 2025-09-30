@@ -1,6 +1,4 @@
 ---
-version: '3.7'
-
 networks:
   proxy:
     external: true
@@ -21,6 +19,7 @@ services:
       DSPACE_REST_HOST: ${HOSTNAME_API}
       DSPACE_REST_PORT: '443'
       DSPACE_REST_NAMESPACE: /server
+      NODE_ENV: production
     labels:
       - traefik.enable=true
       - traefik.docker.network=${PROXY_NETWORK}

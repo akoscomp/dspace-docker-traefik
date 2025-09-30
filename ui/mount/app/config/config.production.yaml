@@ -1,0 +1,54 @@
+# NOTE: will log all redux actions and transfers in console
+production: true
+debug: false
+
+# Angular Universal server settings
+# NOTE: these settings define where Node.js will start your UI application. Therefore, these
+# "ui" settings usually specify a localhost port/URL which is later proxied to a public URL (using Apache or similar)
+ui:
+  ssl: false
+  host: ui.example.com
+  baseUrl: https://ui.example.com/
+  port: 4000
+  # NOTE: Space is capitalized because 'namespace' is a reserved string in TypeScript
+  nameSpace: /
+  # The rateLimiter settings limit each IP to a 'max' of 500 requests per 'windowMs' (1 minute).
+  rateLimiter:
+    windowMs: 60000 # 1 minute
+    max: 500 # limit each IP to 500 requests per windowMs
+  # Trust X-FORWARDED-* headers from proxies (default = true)
+  useProxies: true
+  # the amount of time before the idle warning is shown
+  timeUntilIdle: 14400000 # 4 hour
+  # the amount of time the user has to react after the idle warning is shown before they are logged out.
+  idleGracePeriod: 900000 # 15 minutes
+
+# The REST API server settings
+# NOTE: these settings define which (publicly available) REST API to use. They are usually
+# 'synced' with the 'dspace.server.url' setting in your backend's local.cfg.
+rest:
+  ssl: true
+  host: api.example.com
+  port: 443
+  # NOTE: Space is capitalized because 'namespace' is a reserved string in TypeScript
+  nameSpace: /server
+  # If the rest token expires in less than this amount of time, it will be refreshed automatically.
+  # This is independent from the idle warning.
+  timeLeftBeforeTokenRefresh: 300000 # 5 minutes
+
+defaultLanguage: hu
+
+languages:
+  - code: en
+    label: English
+    active: true
+  - code: de
+    label: Deutsch
+    active: true
+  - code: hu
+    label: Magyar
+    active: true
+
+mediaViewer:
+  image: true
+  video: false

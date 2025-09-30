@@ -1,6 +1,4 @@
 ---
-version: '3.7'
-
 networks:
   dspacenet:
     external: true
@@ -29,6 +27,8 @@ services:
       # from the host machine. This IP range MUST correspond to the 'dspacenet' subnet defined above.
       # proxies__P__trusted__P__ipranges: '172.24.0'
       handle__P__prefix: 10598
+      db__P__cleanDisabled: 'true'
+      db__P__password: ${DSPACE_DB_PASSWORD}
     image: dspace/dspace:${DSPACE_VERSION}
     labels:
       - traefik.enable=true
@@ -54,7 +54,7 @@ services:
     volumes:
       - ${DATA_FOLDER}/assetstore:/dspace/assetstore
       # Mount DSpace's solr configs to a volume, so that we can share to 'dspacesolr' container (see below)
-      - ${DATA_FOLDER}/solr_configs:/dspace/solr
+      - solr_configs:/dspace/solr
       # Ensure that the database is ready BEFORE starting tomcat
       # 1. While a TCP connection to dspacedb port 5432 is not available, continue to sleep
       # 2. Then, run database migration to init database tables
@@ -72,7 +72,8 @@ services:
     container_name: dspacedb
     environment:
       PGDATA: /pgdata
-    image: dspace/dspace-postgres-pgcrypto
+      POSTGRES_PASSWORD: ${DSPACE_DB_PASSWORD}
+    image: dspace/dspace-postgres-pgcrypto:${DSPACE_DB_VERSION}
     networks:
       dspacenet:
     volumes:
@@ -82,7 +83,7 @@ services:
   dspacesolr:
     container_name: dspacesolr
     # Uses official Solr image at https://hub.docker.com/_/solr/
-    image: solr:8.11-slim
+    image: dspace/dspace-solr:${DSPACE_SOLR_VERSION}
     # Needs main 'dspace' container to start first to guarantee access to solr_configs
     depends_on:
       - dspace
@@ -94,7 +95,7 @@ services:
     volumes:
       # Mount our "solr_configs" volume available under the Solr's configsets folder (in a 'dspace' subfolder)
       # This copies the Solr configs from main 'dspace' container into 'dspacesolr' via that volume
-      - ${DATA_FOLDER}/solr_configs:/opt/solr/server/solr/configsets/dspace
+      - solr_configs:/opt/solr/server/solr/configsets/dspace
       # Keep Solr data directory between reboots
       - solr_data:/var/solr/data
       # Initialize all DSpace Solr cores using the mounted local configsets (see above), then start Solr
@@ -118,3 +119,5 @@ services:
 
 volumes:
   solr_data:
+  solr_configs:
+    external: true
