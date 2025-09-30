@@ -8,6 +8,7 @@ services:
       dspace__P__dir: /dspace
       db__P__url: 'jdbc:postgresql://dspacedb:5432/dspace'
       solr__P__server: http://dspacesolr:8983/solr
+      db__P__password: ${DSPACE_DB_PASSWORD}
     volumes:
       - ${DATA_FOLDER}/assetstore:/dspace/assetstore
     entrypoint: /dspace/bin/dspace
