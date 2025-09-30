@@ -11,6 +11,7 @@ Create from each env.sample file an .env file and set all variable to a valid ho
 ```bash
 docker network create proxy
 docker network create dspacenet
+docker volume create solr_configs
 ```
 
 ### Start the containers
